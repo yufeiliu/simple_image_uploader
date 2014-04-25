@@ -1,0 +1,55 @@
+<!doctype html>
+<head>
+  <title>Test</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="image_editor.js"></script>
+
+  <style>
+    .avatar-preview {
+      background-position: 0 0;
+      background-repeat: no-repeat;
+      background-color: #ccc;
+      background-size: 100%;
+      border: 1px solid #aaa;
+      border-radius: 2px;
+      margin-top: 7px;
+      width: 250px;
+      height: 250px;
+      cursor: move;
+    }
+
+    .avatar-cancel {
+      background-color: #333;
+      border-radius: 0 0 3px 0;
+    }
+
+    .file-upload {
+      text-align: left;
+    }
+
+    .avatar-size-label {
+      margin-top: 0.6rem;
+    }
+
+    #avatarSize {
+      width: 250px;
+    }
+
+    .optional-fields {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="image-uploader">
+    <input type="file" name="avatar">
+    <div class="avatar-preview"></div>
+    <div class="avatar-size-label">
+      Resize profile image
+    </div>
+    <input type="range" id="avatarSize" name="resize_ratio" min="1" max="100" value="100">
+    <img class="avatar-hidden-preview" style="display:none">
+    <input type="hidden" name="offset_x" value="0">
+    <input type="hidden" name="offset_y" value="0">
+  </div>
+</body>

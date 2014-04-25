@@ -1,0 +1,7 @@
+Yufei Liu
+liu.yufei@gmail.com
+@_y
+
+Basic image editor in JavaScript with panning, cropped, and zooming.
+
+All additional params are stored in hidden input tags and can be process on the server.

@@ -1,73 +1,18 @@
-$(function () {
+var ImageEditor = function (options) {
+  var width = options.width;
+  var height = options.height;
+  this.$el = options.$el;
   var disabled = true;
-  var $fileInput = $('input[name="avatar"]');
-  var $hiddenImage = $('.avatar-hidden-preview');
-  var $avatarSize = $('#avatarSize');
-  var $offsetX = $('input[name="offset_x"]');
-  var $offsetY = $('input[name="offset_y"]');
+  var $fileInput = this.$('input[name="image"]');
+  var $hiddenImage = this.$('.image-hidden-preview');
+  var $imageSize = this.$('.image-size');
+  var $offsetX = this.$('input[name="offset_x"]');
+  var $offsetY = this.$('input[name="offset_y"]');
 
-  var lastVal = Number($avatarSize.val());
-
-  // Stuff specific to inline editing
-  var $resizeContainer = $('.resize-image-container');
-  var $avatarAction = $('.avatar-action');
-  var formData;
-  var originalAvatarUrl;
-  $('.upload-state').click(function (e) {
-    originalAvatarUrl = $bg.css('background-image');
-    $fileInput.click();
-    e.preventDefault();
-    e.stopPropagation();
-  });
-
-  $('.submit-state').click(function (e) {
-    e.stopPropagation();
-    $cancelAvatar.hide();
-    $resizeContainer.fadeOut('fast');
-    $bg.removeClass('with-cursor');
-    $avatarAction.removeClass('selected').addClass('uploading');
-
-    //Uploading via ajax
-    formData.append('offset_x', $offsetX.val());
-    formData.append('offset_y', $offsetY.val());
-    formData.append('resize_ratio', $avatarSize.val());
-
-    $.ajax({
-      url: "/account/submit_update?inline=true",
-      type: "POST",
-      data: formData,
-      processData: false,
-      contentType: false
-    }).done(function (data) {
-      $bg.css('background-image', 'url(' + data.avatar + ')');
-      $bg.css('background-size', '100%');
-      $bg.css('background-position', '0');
-      $avatarAction.removeClass('uploading').addClass('saved');
-      disabled = true;
-
-      window.setTimeout(function () {
-        $avatarAction.removeClass('saved').addClass('upload');
-      }, 3000);
-    });
-  });
-
-  var $cancelAvatar = $('.avatar-cancel');
-  $cancelAvatar.click(function (e) {
-    $avatarAction.removeClass('selected').addClass('upload');
-    $resizeContainer.fadeOut('fast');
-    $bg.removeClass('with-cursor');
-    disabled = true;
-    $bg.css('background-size', '100%');
-    $bg.css('background-position', '0');
-    $bg.css('background-image', originalAvatarUrl);
-    $cancelAvatar.hide();
-
-    e.preventDefault();
-    e.stopPropagation();
-  });
+  var lastVal = Number($imageSize.val());
 
   // Stuff for generating preview and dragging
-  var $bg = $('.avatar-preview'),
+  var $bg = $('.image-preview'),
     elbounds = {
       w: parseInt($bg.width()),
       h: parseInt($bg.height())
@@ -78,11 +23,11 @@ $(function () {
     movecontinue = false;
 
   function move (e){
-    var inbounds = {x: false, y: false},
-      offset = {
-        x: start.x - (origin.x - e.clientX),
-        y: start.y - (origin.y - e.clientY)
-      };
+    var inbounds = {x: false, y: false};
+    var offset = {
+      x: start.x - (origin.x - e.clientX),
+      y: start.y - (origin.y - e.clientY)
+    };
 
     inbounds.x = offset.x < 0 && (offset.x * -1) < bounds.w;
     inbounds.y = offset.y < 0 && (offset.y * -1) < bounds.h;
@@ -146,7 +91,7 @@ $(function () {
       imageHeight = $hiddenImage.height();
       imageWidth = $hiddenImage.width();
 
-      $avatarSize.val(100);
+      $imageSize.val(100);
       lastVal = 100;
 
       var widthOffset = -(imageWidth - bgWidth) / 2;
@@ -158,20 +103,14 @@ $(function () {
       $offsetY.val(heightOffset);
       start = { x: widthOffset, y: heightOffset };
 
-
-      formData = new FormData();
-      formData.append('avatar', file);
-      $resizeContainer.fadeIn('fast');
       $bg.addClass('with-cursor');
-      $avatarAction.removeClass('upload uploading saved').addClass('selected');
-      $cancelAvatar.show();
 
       disabled = false;
     };
   });
 
-  $avatarSize.on('change', function () {
-    var val = Number($avatarSize.val());
+  $imageSize.on('change', function () {
+    var val = Number($imageSize.val());
     if (imageHeight && imageWidth) {
       var updatedWidth = Math.round(imageWidth / 100 * val);
       var updatedHeight = Math.round(imageHeight / 100 * val);
@@ -188,8 +127,8 @@ $(function () {
       var oldRatio = lastVal / 100;
       var newRatio = val / 100;
 
-      var newX = (x / oldRatio * newRatio + 125) - 125 / oldRatio * newRatio;
-      var newY = (y / oldRatio * newRatio + 125) - 125 / oldRatio * newRatio;
+      var newX = (x / oldRatio * newRatio + width / 2) - width / 2 / oldRatio * newRatio;
+      var newY = (y / oldRatio * newRatio + height / 2) - height / 2 / oldRatio * newRatio;
 
       start.x = newX;
       start.y = newY;
@@ -201,4 +140,8 @@ $(function () {
       lastVal = val;
     }
   });
-});
+};
+
+ImageEditor.prototype.$ = function (selector) {
+  return this.$el.find(selector);
+};

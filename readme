@@ -4,4 +4,4 @@ liu.yufei@gmail.com
 
 Basic image editor in JavaScript with panning, cropped, and zooming.
 
-All additional params are stored in hidden input tags and can be process on the server.
+All additional params are stored in hidden input tags and can be processed on the server.
